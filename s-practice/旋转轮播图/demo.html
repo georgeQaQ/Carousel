@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>旋转木马轮播图</title>
+    <link rel="stylesheet" href="css/css.css"/>
+</head>
+<body>
+<div class="wrap" id="wrap">
+   <div class="slide" id="slide">
+       <ul>
+           <li><a href="#"><img src="images/slidepic1.jpg" alt=""/></a></li>
+           <li><a href="#"><img src="images/slidepic2.jpg" alt=""/></a></li>
+           <li><a href="#"><img src="images/slidepic3.jpg" alt=""/></a></li>
+           <li><a href="#"><img src="images/slidepic4.jpg" alt=""/></a></li>
+           <li><a href="#"><img src="images/slidepic5.jpg" alt=""/></a></li>
+       </ul>
+       <div class="arrow" id="arrow">
+           <a href="javascript:;" class="prev"></a>
+           <a href="javascript:;" class="next"></a>
+       </div>
+   </div>
+</div>
+</body>
+</html>
+<script src="js/animate.js" type="text/javascript"></script>
+<script>
+    var wrap = document.getElementById("wrap");  // 大盒子
+    var arrow = document.getElementById("arrow");  // 左右按钮父盒子
+    var slider = document.getElementById("slide");
+    var lis = slider.getElementsByTagName("li");  // 所有要操作的盒子
+    wrap.onmouseover = function() {
+         animate(arrow,{opacity:50});
+    }
+    wrap.onmouseout = function() {
+        animate(arrow,{opacity:0});
+    }
+    //  存储了每个位置图片的信息
+    var json = [
+        {   //  1
+            width:400,
+            top:20,
+            left:50,
+            opacity:20,
+            z:2
+        },
+        {  // 2
+            width:600,
+            top:70,
+            left:0,
+            opacity:80,
+            z:3
+        },
+        {   // 3
+            width:800,
+            top:100,
+            left:200,
+            opacity:100,
+            z:4
+        },
+        {  // 4
+            width:600,
+            top:70,
+            left:600,
+            opacity:80,
+            z:3
+        },
+        {   //5
+            width:400,
+            top:20,
+            left:750,
+            opacity:20,
+            z:2
+        }
+    ];
+    // 函数节流
+    var control = true;
+    var as = arrow.children;
+    change();//初始化
+    for(var k in as)
+    {
+        as[k].onclick = function() {
+            if(this.className == "prev")
+            {
+                if(control == true)
+                {
+                    change(false);
+                    control = false;  // 点击完毕取反
+                }
+
+            }
+            else
+            {
+                if(control == true)
+                {
+                    change(true);
+                    control = false;
+                }
+            }
+        }
+    }
+    //json交换封装
+    function change(flag) {
+        if(flag == true)
+        {
+            //移除最后一个放到第一
+             json.unshift(json.pop());
+        }
+        else if(flag == false)
+        {
+            //  移除第一个放到最后
+            json.push(json.shift());
+        }
+        //为空初始化
+        else{
+            exchange();
+        }
+       exchange();
+    }
+    /*各图片位置改变*/
+    function exchange(){
+        for(var i=0;i<json.length; i++)
+        {
+            animate(lis[i],{
+                width: json[i].width,
+                top: json[i].top,
+                left: json[i].left,
+                opacity:json[i].opacity,
+                zIndex:json[i].z
+            },function(){control = true;})  // 回调函数是等动画执行完毕，控制节流
+        }
+    }
+
+</script>
